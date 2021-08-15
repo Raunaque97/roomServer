@@ -1,12 +1,12 @@
 import express from "express";
-import cors from "cors";
+// import cors from "cors";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
 // import socketIo from 'socket.io'
 
 const app = express();
 app.use(express());
-app.use(cors());
+// app.use(cors());
 const server = createServer(app);
 server.listen(8000, () => {
   console.log("Server listening to port %s", 8000);
@@ -14,6 +14,8 @@ server.listen(8000, () => {
 const io = new Server(server, {
   // parser: require("socket.io-msgpack-parser"), TODO https://socket.io/docs/v3/custom-parser/
   // ...
+  /* @ts-ignore */
+  //   origin: "*",
   cors: {
     origin: "*",
     // credentials: true,
@@ -77,10 +79,6 @@ io.on("connection", (socket: Socket) => {
    */
   socket.on("pubMsg", (msg) => {
     // socket.rooms.keys()
-    if (socket.rooms.size > 2) {
-      console.warn("member part of multiple room buggy code !!");
-      return;
-    }
     if (members.has(socket.id)) {
       /* @ts-ignore*/
       let m: Member = members.get(socket.id);
