@@ -24,14 +24,20 @@ const io = new Server(server, {
 export type Room = {
   code: string; // == socket.io room id/ roomCode
   locked: boolean;
-  admins: string[];
+  admins: Map<any, Member | undefined>; //  socketId -> Member
+  members: Map<any, Member | undefined>; //  socketId -> Member
+};
+export type Member = {
+  name: string;
+  room: Room;
 };
 
 // objects
+let members = new Map<any, Member>(); //  socketId -> Member
 let rooms = new Map<string, Room>(); // roomCode -> Room
 
 io.on("connection", (socket: Socket) => {
-  console.log("socket connected, id:", socket.id);
+  //   console.log("socket connected, id:", socket.id);
 
   /**
    * if invalid code do nothing
@@ -46,6 +52,8 @@ io.on("connection", (socket: Socket) => {
         /* @ts-ignore */
         let r: Room = rooms.get(msg.code);
         socket.join(r.code); // join socket.io room of same name
+        members.set(socket.id, { name: msg.name, room: r });
+        r.members.set(socket.id, members.get(socket.id));
 
         socket.emit("newRoom", { code: r.code });
 
@@ -54,37 +62,71 @@ io.on("connection", (socket: Socket) => {
           name: msg.name,
         });
       } else {
+        console.log("invalid code ", socket.id, msg);
         // invalid code do nothing
         return;
       }
+    } else {
+      console.log("invalid msg format ", socket.id);
     }
   });
 
   // broadcast to all other members in room
   socket.on("pubMsg", (msg) => {
-    console.log(socket.rooms);
+    // socket.rooms.keys()
+    if (socket.rooms.size > 2) {
+      console.warn("member part of multiple room buggy code !!");
+      return;
+    }
+    if (members.has(socket.id)) {
+      /* @ts-ignore*/
+      let m: Member = members.get(socket.id);
+      socket.to(m.room.code).emit("pubMsg", {
+        sender: m.name,
+        data: msg.data,
+      });
+    }
   });
 
-  // create
+  /**
+   * create id msg.name == undefined do nothing
+   *
+   * join: {name: string}
+   */
   socket.on("createRoom", (msg) => {
-    let code = (Math.random() + 1).toString(36).slice(2, 7);
-    rooms.set(code, {
-      code: code,
-      locked: false,
-      admins: [],
-    });
-    socket.emit("newRoom", { code: code });
+    if (msg.name != undefined) {
+      let code = (Math.random() + 1).toString(36).slice(2, 7);
+      let r = {
+        code: code,
+        locked: false,
+        admins: new Map(),
+        members: new Map(),
+      };
+      rooms.set(code, r);
+      socket.join(r.code);
+      socket.emit("newRoom", { code: code });
+
+      members.set(socket.id, { name: msg.name, room: r });
+      r.members.set(socket.id, members.get(socket.id));
+      r.admins.set(socket.id, members.get(socket.id));
+    }
   });
 
   socket.on("disconnect", () => {
-    // if (players.has(socket.id)) {
-    //   let p = players.get(socket.id);
-    //   p.game.players.delete(p.gameProps.gameId);
-    //   p.game = undefined;
-    //   // p.gameProps = undefined;
-    //   players.delete(socket.id);
-    // }
+    if (members.has(socket.id)) {
+      /* @ts-ignore*/
+      let m: Member = members.get(socket.id);
 
+      m.room.members.delete(socket.id);
+      if (m.room.members.size == 0) {
+        rooms.delete(m.room.code);
+      } else {
+        socket.to(m.room.code).emit("removeMember", {
+          name: m.name,
+        });
+      }
+      members.delete(socket.id);
+    }
     console.log("user disconnect...", socket.id);
   });
 

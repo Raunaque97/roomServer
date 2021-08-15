@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"
+      integrity="sha512-PU5S6BA03fRv1Q5fpwXjg5nlRrgdoguZ74urFInkbABMCENyx5oP3hrDzYMMPh3qdLdknIvrGj3yqZ4JuU7Nag=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style>
+      body {
+        text-align: center;
+      }
+        .flex-container {
+        display: flex;
+        flex-direction: row;
+        }
+
+        .flex-container > li {
+        width: fit-content;
+        margin: 10px;
+        text-align: center;
+        }
+</style>
+    </style>
+  </head>
+  <body>
+      <input
+        placeholder="name"
+        style="width: 100px"
+        onchange="userName=this.value"
+      />
+        <p>&</p>
+    <div>
+      <button onclick="onCreate()">create room</button>    
+      <p id="code"></p>
+    </div>
+    <p>OR join with room code</p>
+    <div>
+    <input placeholder="code" onchange="roomId=this.value" />
+    <button onclick="onJoin()">join room</button>
+    </div>
+
+    <hr />
+    <div id="room" style="text-align: left">
+      <div>users:</div>
+      <ul id="users" class="flex-container"></ul>
+      <hr />
+      <div>msgs:</div>
+      <ul id="msgs"></ul>
+      <input id="msg-input" onchange="msg2send=this.value" />
+      <button onclick="onSend()">send</button>
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>
