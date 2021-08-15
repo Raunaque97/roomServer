@@ -16,6 +16,7 @@ onJoin = () => {
   socket.emit("join", { name: userName, code: roomId });
   members.push(userName);
   renderUsers();
+  socket.emit("getMembers");
 };
 
 onCreate = () => {
@@ -23,6 +24,7 @@ onCreate = () => {
   socket.emit("createRoom", { name: userName });
   members.push(userName);
   renderUsers();
+  socket.emit("getMembers");
 };
 
 onSend = () => {
@@ -46,6 +48,11 @@ socket.on("pubMsg", (msg) => {
 
 socket.on("newMember", (msg) => {
   members.push(msg.name);
+  renderUsers();
+});
+
+socket.on("members", (msg) => {
+  members = msg;
   renderUsers();
 });
 

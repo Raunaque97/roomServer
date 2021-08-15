@@ -62,12 +62,12 @@ io.on("connection", (socket: Socket) => {
           name: msg.name,
         });
       } else {
-        console.log("invalid code ", socket.id, msg);
+        // console.log("invalid code ", socket.id, msg);
         // invalid code do nothing
         return;
       }
     } else {
-      console.log("invalid msg format ", socket.id);
+      //   console.log("invalid msg format ", socket.id);
     }
   });
 
@@ -85,6 +85,21 @@ io.on("connection", (socket: Socket) => {
         sender: m.name,
         data: msg.data,
       });
+    }
+  });
+
+  /**
+   * get all Members of the room
+   */
+  socket.on("getMembers", () => {
+    if (members.has(socket.id)) {
+      /* @ts-ignore*/
+      let m: Member = members.get(socket.id);
+      let names: (string | undefined)[] = [];
+      m.room.members.forEach((v, k) => {
+        names.push(v?.name);
+      });
+      socket.emit("members", names);
     }
   });
 
@@ -127,11 +142,10 @@ io.on("connection", (socket: Socket) => {
       }
       members.delete(socket.id);
     }
-    console.log("user disconnect...", socket.id);
+    // console.log("user disconnect...", socket.id);
   });
 
   socket.on("error", function (err) {
-    console.log("received error from user:", socket.id);
-    console.log(err);
+    // console.log("received error from user:", socket.id, err);
   });
 });
