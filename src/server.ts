@@ -2,32 +2,26 @@ import express from "express";
 // import cors from "cors";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
-// import socketIo from 'socket.io'
 
 const app = express();
 app.use(express());
 // app.use(cors());
 const server = createServer(app);
-server.listen(8000, () => {
-  console.log("Server listening to port %s", 8000);
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => {
+  console.log("Server listening to port %s", PORT);
 });
 const io = new Server(server, {
   // parser: require("socket.io-msgpack-parser"), TODO https://socket.io/docs/v3/custom-parser/
   // ...
-  /* @ts-ignore */
-  //   origin: "*",
   cors: {
     origin: "*",
     // methods: ["GET", "POST"],
-    // allowedHeaders: ["my-custom-header"],
     // credentials: true,
     /* @ts-ignore */
     handlePreflightRequest: (req, res) => {
       res.writeHead(200, {
         "Access-Control-Allow-Origin": "*",
-        // "Access-Control-Allow-Methods": "GET,POST",
-        // "Access-Control-Allow-Headers": "my-custom-header",
-        // "Access-Control-Allow-Credentials": true,
       });
       res.end();
     },

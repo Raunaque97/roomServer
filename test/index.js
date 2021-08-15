@@ -1,7 +1,7 @@
-// var socket = io("https://git.heroku.com/socker-room-server.git", {});
-var socket = io("http://localhost:8000", {
-  //   withCredential: true,
-});
+var socket = io("https://socker-room-server.herokuapp.com/", {});
+// var socket = io("http://localhost:8000", {
+//   //   withCredential: true,
+// });
 
 // console.log(socket);
 socket.on("create", (msg) => {
