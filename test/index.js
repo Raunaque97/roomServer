@@ -1,5 +1,8 @@
 // var socket = io("https://git.heroku.com/socker-room-server.git", {});
-var socket = io("http://localhost:8000");
+var socket = io("http://localhost:8000", {
+  //   withCredential: true,
+});
+
 // console.log(socket);
 socket.on("create", (msg) => {
   msg.forEach((item) => {});
@@ -66,7 +69,7 @@ socket.on("removeMember", (msg) => {
 });
 
 function renderUsers() {
-  console.log(members);
+  //   console.log(members);
   while (users.firstChild) {
     users.removeChild(users.firstChild);
   }

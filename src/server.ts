@@ -18,7 +18,19 @@ const io = new Server(server, {
   //   origin: "*",
   cors: {
     origin: "*",
+    // methods: ["GET", "POST"],
+    // allowedHeaders: ["my-custom-header"],
     // credentials: true,
+    /* @ts-ignore */
+    handlePreflightRequest: (req, res) => {
+      res.writeHead(200, {
+        "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Methods": "GET,POST",
+        // "Access-Control-Allow-Headers": "my-custom-header",
+        // "Access-Control-Allow-Credentials": true,
+      });
+      res.end();
+    },
   },
 });
 
