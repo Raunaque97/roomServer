@@ -71,7 +71,10 @@ io.on("connection", (socket: Socket) => {
     }
   });
 
-  // broadcast to all other members in room
+  /**
+   * broadcast to all other members in room
+   * pubMsg: {data: any}
+   */
   socket.on("pubMsg", (msg) => {
     // socket.rooms.keys()
     if (socket.rooms.size > 2) {
@@ -90,6 +93,7 @@ io.on("connection", (socket: Socket) => {
 
   /**
    * get all Members of the room
+   * getMembers
    */
   socket.on("getMembers", () => {
     if (members.has(socket.id)) {
@@ -106,7 +110,7 @@ io.on("connection", (socket: Socket) => {
   /**
    * create id msg.name == undefined do nothing
    *
-   * join: {name: string}
+   * createRoom: {name: string}
    */
   socket.on("createRoom", (msg) => {
     if (msg.name != undefined) {
