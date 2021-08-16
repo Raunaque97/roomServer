@@ -13,7 +13,7 @@ socket.io-client v4.x
 ## An Example App
 An Example App can be found in the test folder. It uses all the APIs provided by the server to make a bare minimum chat app. 
 
-The example chat app is also hosted in [netlify](TODO).
+The example chat app is also hosted in [netlify](https://chatdemousingroomserver.netlify.app/).
 
 #### client side code 
 ```
