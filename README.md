@@ -28,18 +28,18 @@ socket.emit("pubMsg",{....})
 
 ### client to server:
 ```js
-createRoom: {name: string}
-join: {name: string, code: string}
-pubMsg: {data: any}
-getMembers: 
+createRoom: {name: string} // make a room and join it with username as `name`, server responds with `newRoom`
+join: {name: string, code: string} // join room with is as `code`  and username as `name`, server responds with `newRoom`
+pubMsg: {data: any} // broadcast the data to all other connected clients in the same room.
+getMembers: // server responds with `members`
 ```
 
 ### server to client:
 ```
 newRoom: { code: string }
-newMember: { name: string }
-removeMember: { name: string }
-pubMsg: { sender: string, data: any }
+newMember: { name: string } // a new client has joined the room with username as `name`
+removeMember: { name: string } // a client disconnected from the room
+pubMsg: { sender: string, data: any } // braodcast
 members: string[]
 ```
 
