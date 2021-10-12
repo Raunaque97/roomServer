@@ -39,7 +39,7 @@ getMembers: // server responds with `members`
 newRoom: { code: string }
 newMember: { name: string } // a new client has joined the room with username as `name`
 removeMember: { name: string } // a client disconnected from the room
-pubMsg: { sender: string, data: any } // braodcast
+pubMsg: { sender: string, data: any } // broadcast msg send from `sender`
 members: string[]
 ```
 
